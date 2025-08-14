@@ -1,17 +1,18 @@
-# 🤖 AI Chatbot với FastAPI + Streamlit
+# 🤖 AI Chatbot - Hệ thống Tư vấn Điện thoại Thông minh
 
-Một ứng dụng chatbot thông minh được xây dựng bằng FastAPI (backend) và Streamlit (frontend), tích hợp với Google Gemini AI và hệ thống RAG (Retrieval-Augmented Generation).
+Một hệ thống chatbot AI tiên tiến được xây dựng để tư vấn về điện thoại, tích hợp với Google Gemini AI, hệ thống RAG (Retrieval-Augmented Generation), và giao diện web hiện đại.
 
-## ✨ Tính năng
+## ✨ Tính năng chính
 
 - 🚀 **FastAPI Backend**: API server mạnh mẽ với auto-documentation
 - 💬 **Streamlit Frontend**: Giao diện chat trực quan và thân thiện
-- 🤖 **Google Gemini AI**: Tích hợp mô hình AI tiên tiến
-- 🔍 **Vietnamese SBERT**: Hệ thống embedding cho tiếng Việt
-- 💾 **Conversation Management**: Quản lý lịch sử chat theo conversation
-- 📊 **Real-time Stats**: Thống kê thời gian thực
-- 🎨 **Modern UI**: Giao diện đẹp mắt với CSS tùy chỉnh
-- 🔧 **RESTful API**: API đầy đủ cho tích hợp với ứng dụng khác
+- 🤖 **Google Gemini 2.5 Flash**: Tích hợp mô hình AI tiên tiến nhất
+- 🔍 **Hệ thống RAG**: Tìm kiếm và truy xuất thông tin thông minh
+- 🧠 **LLM Router**: Phân loại và định tuyến câu hỏi thông minh
+- 💾 **Memory Management**: Quản lý bộ nhớ và lịch sử chat
+- 🎯 **Vietnamese SBERT**: Hệ thống embedding tối ưu cho tiếng Việt
+- 🔄 **Hybrid Search**: Kết hợp BM25 và Vector Search
+- 📊 **Real-time Response**: Phản hồi nhanh chóng và chính xác
 
 ## 🏗️ Kiến trúc hệ thống
 
@@ -24,10 +25,37 @@ Một ứng dụng chatbot thông minh được xây dựng bằng FastAPI (back
                                               │
                                               ▼
                                     ┌─────────────────┐
-                                    │   AI Models     │
-                                    │ • Generator     │
-                                    │ • Embedding     │
+                                    │   Core System   │
+                                    │ • LLM Router    │
+                                    │ • RAG Engine    │
+                                    │ • Memory Mgmt   │
                                     └─────────────────┘
+                                              │
+                                              ▼
+                                    ┌─────────────────┐
+                                    │   AI Models     │
+                                    │ • Gemini 2.5    │
+                                    │ • Vietnamese    │
+                                    │   SBERT         │
+                                    └─────────────────┘
+```
+
+## 📁 Cấu trúc dự án
+
+```
+src/
+├── api.py                    # FastAPI server chính
+├── api_simple.py             # API đơn giản (backup)
+├── streamlit.py              # Giao diện Streamlit
+├── requirements.txt          # Dependencies
+├── README.md                 # Tài liệu dự án
+├── data/                     # Dữ liệu và database
+│   └── data.chromadb        # ChromaDB database
+├── retrival/                 # Hệ thống tìm kiếm
+│   ├── llm_router.py        # Phân loại và định tuyến
+│   └── re_rank.py           # Hybrid search + re-ranking
+└── generation/               # Hệ thống sinh câu trả lời
+    └── llm.py               # LLM với memory management
 ```
 
 ## 🚀 Cài đặt
@@ -35,7 +63,7 @@ Một ứng dụng chatbot thông minh được xây dựng bằng FastAPI (back
 ### 1. Clone repository
 ```bash
 git clone <repository-url>
-cd ChatBot
+cd chatbot/src
 ```
 
 ### 2. Tạo môi trường ảo
@@ -43,7 +71,7 @@ cd ChatBot
 python -m venv venv
 source venv/bin/activate  # Linux/Mac
 # hoặc
-venv\Scripts\activate  # Windows
+venv\Scripts\activate     # Windows
 ```
 
 ### 3. Cài đặt dependencies
@@ -52,126 +80,147 @@ pip install -r requirements.txt
 ```
 
 ### 4. Cấu hình API Key
-Tạo file `.env` trong thư mục gốc và thêm Google AI API key:
+Tạo file `.env` trong thư mục `src` và thêm Google AI API key:
 ```
 GOOGLE_API_KEY=your_google_ai_api_key_here
 ```
 
 ## 🎯 Sử dụng
 
-### Chạy toàn bộ hệ thống (Khuyến nghị)
+### Chạy API Server
 ```bash
-python run_full_system.py
-```
-
-### Chạy riêng lẻ
-
-#### 1. Chạy API Server
-```bash
-python api/main.py
+cd src
+python -m uvicorn api:app --reload
 ```
 API server sẽ chạy tại `http://localhost:8000`
 
-#### 2. Chạy Streamlit Interface
+### Chạy Streamlit Interface
 ```bash
-streamlit run app/chatbot_interface.py
+cd src
+streamlit run streamlit.py
 ```
 Streamlit sẽ chạy tại `http://localhost:8501`
+
+### Chạy API đơn giản (nếu có vấn đề với API chính)
+```bash
+cd src
+python -m uvicorn api_simple:app --reload
+```
 
 ## 📡 API Endpoints
 
 ### Core Endpoints
-- `GET /` - Root endpoint
-- `GET /health` - Health check
-- `POST /chat` - Gửi tin nhắn chat
-- `POST /initialize` - Khởi tạo mô hình AI
+- `POST /chat/` - Gửi tin nhắn chat
+  ```json
+  {
+    "message": "Xin chào!",
+    "thread_id": "optional_thread_id"
+  }
+  ```
 
-### Conversation Management
-- `GET /conversations` - Lấy danh sách conversations
-- `GET /conversations/{id}` - Lấy lịch sử conversation
-- `DELETE /conversations/{id}` - Xóa conversation
-- `DELETE /conversations` - Xóa tất cả conversations
-
-### Statistics
-- `GET /stats` - Lấy thống kê hệ thống
+### Response Format
+```json
+{
+  "thread_id": "uuid",
+  "response": "Phản hồi từ AI"
+}
+```
 
 ### API Documentation
 Truy cập `http://localhost:8000/docs` để xem Swagger UI documentation.
 
-## 💬 Sử dụng API
+## 🔧 Các thành phần chính
 
-### Gửi tin nhắn chat
-```bash
-curl -X POST "http://localhost:8000/chat" \
-     -H "Content-Type: application/json" \
-     -d '{"message": "Xin chào!", "conversation_id": "optional_id"}'
+### 1. LLM Router (`retrival/llm_router.py`)
+- Phân loại câu hỏi thành 2 loại: `chatchit` (trò chuyện) và `rag` (tìm kiếm thông tin)
+- Chuẩn hóa và tóm tắt nội dung câu hỏi
+- Tối ưu hóa truy vấn cho hệ thống RAG
+
+### 2. RAG System (`retrival/re_rank.py`)
+- **Hybrid Search**: Kết hợp BM25 và Vector Search
+- **Re-ranking**: Sử dụng Vietnamese SBERT để sắp xếp kết quả
+- **Score Threshold**: Lọc kết quả theo ngưỡng điểm
+
+### 3. LLM with Memory (`generation/llm.py`)
+- **ChatWithMemory**: Quản lý bộ nhớ dài hạn và ngắn hạn
+- **Auto-summarization**: Tự động tóm tắt khi lịch sử quá dài
+- **Thread Management**: Quản lý các cuộc hội thoại riêng biệt
+
+### 4. FastAPI Server (`api.py`)
+- RESTful API endpoints
+- Error handling và logging
+- Thread ID management
+- Integration với tất cả components
+
+### 5. Streamlit Interface (`streamlit.py`)
+- Giao diện chat trực quan
+- Real-time messaging
+- Custom CSS styling
+- Conversation history
+
+## 💬 Ví dụ sử dụng
+
+### Chat thông thường
+```
+User: "Chào bạn, hôm nay thời tiết đẹp nhỉ?"
+Router: chatchit
+Response: "Chào bạn! Lisa đây. Hôm nay thời tiết thật đẹp phải không? Bạn có muốn tìm hiểu về điện thoại nào không?"
 ```
 
-### Lấy thống kê
-```bash
-curl "http://localhost:8000/stats"
+### Tìm kiếm thông tin sản phẩm
+```
+User: "Tôi muốn mua iPhone 16, giá bao nhiêu?"
+Router: rag
+Query: "thông tin chi tiết iphone 16"
+Response: "Chào bạn! Lisa đây. Về iPhone 16, đây là thông tin chi tiết..."
 ```
 
-### Health check
-```bash
-curl "http://localhost:8000/health"
-```
-
-## 📁 Cấu trúc dự án
-
-```
-ChatBot/
-├── api/
-│   └── main.py                 # FastAPI server
-├── app/
-│   └── chatbot_interface.py    # Streamlit frontend
-├── src/
-│   ├── generation/
-│   │   ├── generator.py        # Mô hình AI chính
-│   │   └── memory.py          # Quản lý bộ nhớ
-│   ├── embedding/
-│   │   └── embedding_model.py  # Mô hình embedding
-│   ├── retrieval/              # Hệ thống retrieval
-│   └── rag_system.py          # Hệ thống RAG chính
-├── .streamlit/
-│   └── config.toml            # Cấu hình Streamlit
-├── requirements.txt
-├── run_full_system.py         # Script chạy toàn bộ hệ thống
-└── README.md
-```
-
-## 🔧 Cấu hình
+## 🛠️ Cấu hình nâng cao
 
 ### Mô hình AI
-- **Generator**: Google Gemini 1.5 Flash
+- **Generator**: Google Gemini 2.5 Flash
 - **Embedding**: Vietnamese SBERT (keepitreal/vietnamese-sbert)
+- **Re-ranker**: ViRanker (namdp-ptit/ViRanker)
 
-### Ports
-- **API Server**: 8000
-- **Streamlit**: 8501
+### Database
+- **Vector Store**: ChromaDB
+- **Collection**: "production"
+- **Persistence**: Local file system
 
-### Environment Variables
-- `GOOGLE_API_KEY`: Google AI API key
+### Performance
+- **Top-k**: 3-5 documents
+- **Score Threshold**: 5.0
+- **Memory Threshold**: 10 messages
 
-## 🛠️ Phát triển
+## 🔍 Troubleshooting
 
-### Thêm API endpoints
-1. Thêm endpoint mới trong `api/main.py`
-2. Cập nhật Pydantic models nếu cần
-3. Test với Swagger UI
+### Lỗi thường gặp
 
-### Tùy chỉnh giao diện
-Chỉnh sửa CSS trong `app/chatbot_interface.py` hoặc thêm components mới.
+1. **Collection không tồn tại**
+   - Tự động tạo collection mặc định
+   - Thêm documents mẫu
 
-### Tích hợp với ứng dụng khác
-Sử dụng REST API endpoints để tích hợp chatbot vào ứng dụng của bạn.
+2. **Tensor iteration error**
+   - Đã fix trong `re_rank.py`
+   - Xử lý tensor 0-d
 
-## 📝 Ghi chú
+3. **API key không hợp lệ**
+   - Kiểm tra file `.env`
+   - Đảm bảo API key có quyền truy cập Gemini
 
-- Đảm bảo có kết nối internet để sử dụng Google AI API
-- API key cần có quyền truy cập vào Google Generative AI
-- Mô hình embedding sẽ được tải lần đầu khi khởi tạo
-- Hệ thống hỗ trợ multiple conversations
+### Debug Mode
+Thêm print statements trong code để debug:
+```python
+print("[DEBUG]", router["router"])
+print("[DEBUG]", relust)
+```
+
+## 📈 Performance Tips
+
+1. **Sử dụng API đơn giản** nếu không cần RAG
+2. **Giảm top-k** để tăng tốc độ
+3. **Tăng score threshold** để giảm noise
+4. **Sử dụng thread_id** để duy trì context
 
 ## 🤝 Đóng góp
 
@@ -183,4 +232,15 @@ Mọi đóng góp đều được chào đón! Vui lòng:
 
 ## 📄 License
 
-MIT License - xem file LICENSE để biết thêm chi tiết. 
+MIT License - xem file LICENSE để biết thêm chi tiết.
+
+## 📞 Hỗ trợ
+
+Nếu gặp vấn đề, vui lòng:
+1. Kiểm tra logs trong terminal
+2. Xem API documentation tại `/docs`
+3. Tạo issue trên GitHub
+
+---
+
+**Lưu ý**: Đảm bảo có kết nối internet để sử dụng Google AI API và tải các mô hình embedding. 

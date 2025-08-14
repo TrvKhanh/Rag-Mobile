@@ -1,18 +1,17 @@
-# 🤖 AI Chatbot - Hệ thống Tư vấn Điện thoại Thông minh
+# 🤖 AI Chatbot - Hệ thống Tư vấn Điện thoại 
 
-Một hệ thống chatbot AI tiên tiến được xây dựng để tư vấn về điện thoại, tích hợp với Google Gemini AI, hệ thống RAG (Retrieval-Augmented Generation), và giao diện web hiện đại.
+Một hệ thống RAG (Retrieval-Augmented Generation) tư vấn điện thoại
 
 ## ✨ Tính năng chính
 
-- 🚀 **FastAPI Backend**: API server mạnh mẽ với auto-documentation
-- 💬 **Streamlit Frontend**: Giao diện chat trực quan và thân thiện
-- 🤖 **Google Gemini 2.5 Flash**: Tích hợp mô hình AI tiên tiến nhất
-- 🔍 **Hệ thống RAG**: Tìm kiếm và truy xuất thông tin thông minh
-- 🧠 **LLM Router**: Phân loại và định tuyến câu hỏi thông minh
+- 🚀 **FastAPI Backend**: Tạo api
+- 💬 **Streamlit Frontend**:Giao diện cơ bản
+- 🤖 **Google Gemini 2.5 Flash**
+- 🔍 **Hệ thống RAG**: Tìm kiếm và truy xuất thông tin 
+- 🧠 **LLM Router**: Phân loại và định tuyến câu hỏi 
 - 💾 **Memory Management**: Quản lý bộ nhớ và lịch sử chat
-- 🎯 **Vietnamese SBERT**: Hệ thống embedding tối ưu cho tiếng Việt
 - 🔄 **Hybrid Search**: Kết hợp BM25 và Vector Search
-- 📊 **Real-time Response**: Phản hồi nhanh chóng và chính xác
+
 
 ## 🏗️ Kiến trúc hệ thống
 
@@ -35,8 +34,7 @@ Một hệ thống chatbot AI tiên tiến được xây dựng để tư vấn 
                                     ┌─────────────────┐
                                     │   AI Models     │
                                     │ • Gemini 2.5    │
-                                    │ • Vietnamese    │
-                                    │   SBERT         │
+                                    │                 │
                                     └─────────────────┘
 ```
 
@@ -44,8 +42,7 @@ Một hệ thống chatbot AI tiên tiến được xây dựng để tư vấn 
 
 ```
 src/
-├── api.py                    # FastAPI server chính
-├── api_simple.py             # API đơn giản (backup)
+├── api.py                    # FastAPI server chính           # API đơn giản (backup)
 ├── streamlit.py              # Giao diện Streamlit
 ├── requirements.txt          # Dependencies
 ├── README.md                 # Tài liệu dự án
@@ -175,72 +172,3 @@ Query: "thông tin chi tiết iphone 16"
 Response: "Chào bạn! Lisa đây. Về iPhone 16, đây là thông tin chi tiết..."
 ```
 
-## 🛠️ Cấu hình nâng cao
-
-### Mô hình AI
-- **Generator**: Google Gemini 2.5 Flash
-- **Embedding**: Vietnamese SBERT (keepitreal/vietnamese-sbert)
-- **Re-ranker**: ViRanker (namdp-ptit/ViRanker)
-
-### Database
-- **Vector Store**: ChromaDB
-- **Collection**: "production"
-- **Persistence**: Local file system
-
-### Performance
-- **Top-k**: 3-5 documents
-- **Score Threshold**: 5.0
-- **Memory Threshold**: 10 messages
-
-## 🔍 Troubleshooting
-
-### Lỗi thường gặp
-
-1. **Collection không tồn tại**
-   - Tự động tạo collection mặc định
-   - Thêm documents mẫu
-
-2. **Tensor iteration error**
-   - Đã fix trong `re_rank.py`
-   - Xử lý tensor 0-d
-
-3. **API key không hợp lệ**
-   - Kiểm tra file `.env`
-   - Đảm bảo API key có quyền truy cập Gemini
-
-### Debug Mode
-Thêm print statements trong code để debug:
-```python
-print("[DEBUG]", router["router"])
-print("[DEBUG]", relust)
-```
-
-## 📈 Performance Tips
-
-1. **Sử dụng API đơn giản** nếu không cần RAG
-2. **Giảm top-k** để tăng tốc độ
-3. **Tăng score threshold** để giảm noise
-4. **Sử dụng thread_id** để duy trì context
-
-## 🤝 Đóng góp
-
-Mọi đóng góp đều được chào đón! Vui lòng:
-1. Fork repository
-2. Tạo branch mới
-3. Commit changes
-4. Tạo Pull Request
-
-## 📄 License
-
-MIT License - xem file LICENSE để biết thêm chi tiết.
-
-## 📞 Hỗ trợ
-
-Nếu gặp vấn đề, vui lòng:
-1. Kiểm tra logs trong terminal
-2. Xem API documentation tại `/docs`
-3. Tạo issue trên GitHub
-
----
-
-**Lưu ý**: Đảm bảo có kết nối internet để sử dụng Google AI API và tải các mô hình embedding. 
